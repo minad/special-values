@@ -1,16 +1,15 @@
-name: quickcheck-special
-version: 0.1.0.5
-synopsis: Edge cases and special values for QuickCheck Arbitrary instances
+name: special-values
+version: 0.1.0.0
+synopsis: Typeclass providing special values
 description:
-  The standard Arbitrary instances of QuickCheck don't generate
-  special values. This is fixed by this package which provides the newtype Special
-  with an Arbitrary instance. The special values are given by the SpecialValues typeclass.
+  Special values are provided by a SpecialValues typeclass.
+  Those can be used for example by QuickCheck, see quickcheck-special.
 category: Testing
 author: Daniel Mendler <mail@daniel-mendler.de>
 maintainer: Daniel Mendler <mail@daniel-mendler.de>
-copyright: 2016 Daniel Mendler
+copyright: 2017 Daniel Mendler
 license: MIT
-github: minad/quickcheck-special
+github: minad/special-values
 
 ghc-options:
 - -Wall
@@ -18,7 +17,6 @@ ghc-options:
 dependencies:
 - base < 6
 - bytestring >= 0.9 && < 0.11
-- QuickCheck >= 2.1 && < 2.11
 - scientific >= 0.2 && < 0.4
 - text       >= 0.7 && < 1.3
 - ieee754    >= 0.8 && < 0.9

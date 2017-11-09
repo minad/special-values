@@ -1,23 +1,16 @@
 -----------------------------------------------------------------------------
 -- |
--- Module      :  Test.QuickCheck.Special
--- Copyright   :  Daniel Mendler (c) 2016,
+-- Module      :  Data.SpecialValues
+-- Copyright   :  Daniel Mendler (c) 2017
 -- License     :  MIT (see the file LICENSE)
 --
 -- Maintainer  :  mail@daniel-mendler.de
 -- Stability   :  experimental
 -- Portability :  portable
---
--- The standard 'Arbitrary' instances don't generate special values.
--- This is fixed by this package which provides the newtype 'Special' with an 'Arbitrary' instance.
--- The special values are given by the 'SpecialValues' typeclass.
 -----------------------------------------------------------
 
-{-# LANGUAGE DeriveFunctor #-}
-{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE FlexibleInstances #-}
-module Test.QuickCheck.Special (
-  Special(..),
+module Data.SpecialValues (
   SpecialValues(..),
 ) where
 
@@ -26,17 +19,11 @@ import Data.Word
 import Data.Ratio
 import Numeric.Natural (Natural)
 import Numeric.IEEE
-import Test.QuickCheck
 import qualified Data.ByteString as BS
 import qualified Data.ByteString.Lazy as BL
 import qualified Data.Scientific as Scientific
 import qualified Data.Text as TS
 import qualified Data.Text.Lazy as TL
-
--- | Additionally to the standard Arbitrary instances,
--- this generates special values with a small probability.
-newtype Special a = Special { getSpecial :: a }
-  deriving (Show, Read, Functor, Bounded, Enum, Eq, Ord, Num, Real, Integral)
 
 -- | Provides a list of special values or edge cases
 class SpecialValues a where
@@ -104,14 +91,6 @@ instance (SpecialValues a, SpecialValues b) => SpecialValues (Either a b) where
 
 instance (SpecialValues a, SpecialValues b) => SpecialValues (a, b) where
   specialValues = zip specialValues specialValues
-
-instance (Arbitrary a, SpecialValues a) => Arbitrary (Special a) where
-  shrink = fmap Special . shrink . getSpecial
-  arbitrary = fmap Special $ frequency $ list specialValues
-    where list s = (10 * length s, arbitrary) : fmap (\t -> (1, return t)) s
-
-instance CoArbitrary a => CoArbitrary (Special a) where
-  coarbitrary = coarbitrary . getSpecial
 
 specialIEEE :: IEEE a => [a]
 specialIEEE = list ++ map negate list
